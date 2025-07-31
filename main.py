@@ -1,29 +1,30 @@
+from datetime import datetime
 from fastapi import  FastAPI
 from typing import List
 from pydantic import BaseModel
 from starlette.requests import Request
-from starlette.responses import JSONResponse, Response
+from starlette.responses import JSONResponse, Response, PlainTextResponse
 
 app = FastAPI()
 
-@app.get("/ping")
+@app.get("/ping" ,response_model=PlainTextResponse)
 def text():
-    return Response("Pong")
+    return "Pong"
 
 @app.get("/home")
-def Welcome(request = Request):
+def Welcome():
     with open("Welcomehome.html","r",encoding="utf-8") as  file:
         html_content = file.read()
     return Response(content=html_content, status_code=200,media_type="text/html")
-
-class Object_list(BaseModel):
+class Object(BaseModel):
     author:str
     title:str
     content:str
+    create_time : datetime
 
-list_List = List[Object_list]
+list_List = List[Object] = []
 
-@app.post("/post")
-def post(request = Request):
-        return {Object_list}
+@app.post("/post" , response_model=List[Object])
+def post():
+        return {Object}
 
